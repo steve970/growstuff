@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Growstuff::OauthSignupAction
   #
   # Inspects the omniauth information
@@ -9,7 +11,7 @@ class Growstuff::OauthSignupAction
   # variable
   #
   def find_or_create_from_authorization(auth)
-    member ||= Member.where(email: auth.info.email).first_or_create do |m|
+    member ||= Member.kept.where(email: auth.info.email).first_or_create do |m|
       m.email = auth.info.email
       m.password = Devise.friendly_token[0, 20]
 
@@ -39,20 +41,18 @@ class Growstuff::OauthSignupAction
   def establish_authentication(auth, member)
     name = determine_name(auth)
 
-    authentication = member.authentications
+    member.authentications
       .create_with(
-        name: name,
-        token: auth['credentials']['token'],
+        name:   name,
+        token:  auth['credentials']['token'],
         secret: auth['credentials']['secret']
       )
       .find_or_create_by(
-        provider: auth['provider'],
-        uid: auth['uid'],
-        name: name,
+        provider:  auth['provider'],
+        uid:       auth['uid'],
+        name:      name,
         member_id: member.id
       )
-
-    authentication
   end
 
   def member_created?

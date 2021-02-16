@@ -1,17 +1,9 @@
-engines:
-  rubocop:
-    enabled: true
-  scss-lint:
-    enabled: true
-  shellcheck:
-    enabled: true
-  eslint:
+plugins:
+  brakeman:
+    enabled: false # codeclimate's brakeman is stuck in rails 5 rules
+  bundler-audit:
     enabled: true
   coffeelint:
-    enabled: true
-  brakeman:
-    enabled: true
-  bundler-audit:
     enabled: true
   duplication:
     enabled: true
@@ -19,21 +11,30 @@ engines:
       languages:
       - ruby
       - javascript
-    exclude_fingerprints:
-    - 16dbcb58d6caa7ccfe241417831ecfa6
-    - 7d7dca4f27f50e3084f203280073cc74
+  editorconfig:
+    enabled: true
+  eslint:
+    enabled: true
   fixme:
     enabled: true
-    exclude_fingerprints:  # rubocop_todo filename
-    - 63b8552079d106832fbe281566b6d028
-    - d38afbaaea3ecaa9a4cf046b07a01cec
-    - 57ff3968fd371d3e1f75c237d6c78acf
+  haml-lint:
+    enabled: true
+  nodesecurity:
+    enabled: true
+  rubocop:
+    enabled: true
+    channel: "rubocop-1-11"
+  scss-lint:
+    enabled: true
+  shellcheck:
+    enabled: true
 ratings:
   paths:
   - "**.rb"
+  - "**.ru"
   - "**.js"
   - "**.coffee"
-  - "**.sass"
+  - "**.scss"
   - "**.haml"
   - Gemfile.lock
 exclude_paths:
@@ -42,3 +43,5 @@ exclude_paths:
 - spec/
 - public/
 - app/assets/stylesheets/bootstrap-accessibility.css
+- app/assets/javascripts/bootstrap*
+- app/assets/stylesheets/leaflet_overrides.scss

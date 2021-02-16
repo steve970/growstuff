@@ -1,9 +1,10 @@
-class Comment < ActiveRecord::Base
-  belongs_to :author, class_name: 'Member'
-  belongs_to :post
+# frozen_string_literal: true
 
-  default_scope { order("created_at DESC") }
-  scope :post_order, -> { reorder("created_at ASC") } # for display on post page
+class Comment < ApplicationRecord
+  belongs_to :author, class_name: 'Member', inverse_of: :comments
+  belongs_to :post, counter_cache: true
+
+  scope :post_order, -> { order(created_at: :asc) } # for display on post page
 
   after_create do
     recipient = post.author.id
@@ -12,11 +13,15 @@ class Comment < ActiveRecord::Base
     if recipient != sender
       Notification.create(
         recipient_id: recipient,
-        sender_id: sender,
-        subject: "#{author} commented on #{post.subject}",
-        body: body,
-        post_id: post.id
+        sender_id:    sender,
+        subject:      "#{author} commented on #{post.subject}",
+        body:         body,
+        post_id:      post.id
       )
     end
+  end
+
+  def to_s
+    "#{author.login_name} commented on #{post.subject}"
   end
 end
